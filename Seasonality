@@ -1,0 +1,60 @@
+import pandas as pd
+from statsmodels.tsa.seasonal import seasonal_decompose
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Setting seaborn as default style even if use only matplotlib
+sns.set()
+
+# Load the data
+df = pd.read_csv('/content/traffic.csv', parse_dates=['DateTime'], index_col='DateTime')
+df1 = df.head(300)
+
+# Assume the data has an hourly frequency
+result = seasonal_decompose(df1['Traffic'], model='additive', period=24)
+
+# Define colors for the plot
+colors = sns.color_palette('Greens_r', n_colors=4)
+
+# Plot the decomposed components
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(12, 8))
+result.observed.plot(ax=ax1, color=colors[0])
+result.trend.plot(ax=ax2, color=colors[1])
+result.seasonal.plot(ax=ax3, color=colors[2])
+result.resid.plot(ax=ax4, color=colors[1])
+
+# Set the title for the plots
+ax1.title.set_text('Observed')
+ax2.title.set_text('Trend')
+ax3.title.set_text('Seasonal')
+ax4.title.set_text('Residual')
+
+# Add space between subplots
+plt.tight_layout()
+plt.show()
+
+# Resample to monthly frequency
+monthly_df = df.resample('M').sum()
+
+# Perform the decomposition
+result = seasonal_decompose(monthly_df['Traffic'], model='additive', period=6)
+
+# Define colors for the plot
+colors = sns.color_palette('Greens_r', n_colors=4)
+
+# Plot the decomposed components
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(12, 8))
+result.observed.plot(ax=ax1, color=colors[0])
+result.trend.plot(ax=ax2, color=colors[1])
+result.seasonal.plot(ax=ax3, color=colors[2])
+result.resid.plot(ax=ax4, color=colors[1])
+
+# Set the title for the plots
+ax1.title.set_text('Observed')
+ax2.title.set_text('Trend')
+ax3.title.set_text('Seasonal')
+ax4.title.set_text('Residual')
+
+# Add space between subplots
+plt.tight_layout()
+plt.show()
